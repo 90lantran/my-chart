@@ -1,0 +1,155 @@
+<link rel="import" href="../polymer/polymer.html">
+<script src="../jquery/dist/jquery.js"></script>
+<script src="../d3/d3.min.js"></script> 
+
+<dom-module id="my-chart">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      .axis path,
+      .axis line{
+        fill: none;
+        stroke: black;
+        shape-rendering: crispEdges;
+      }
+
+      circle {
+        fill: #ff0000;
+      }
+
+      .axis text {
+        font-family: : sans-serif;
+        font-size:  13px;
+      }
+    </style>
+    <iron-meta id="id11"> </iron-meta>
+    <iron-meta id="id22"> </iron-meta>
+    <div id$="{{plotID}}"> </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: "my-chart",
+
+      properties: {
+        dataX: {
+          type: Array,
+          notify: true
+        },
+
+        dataY:{
+          type: Array,
+          notify: true
+        },
+
+        plotID:{
+          type: String,
+          value: function(){
+          return 'ERFabc' + Math.floor((Math.random() * 10000) + 1) ;
+
+          }
+        },
+
+        data: {
+          type: String,
+          notify: true,
+          observer: '_dataSetValue'
+        }
+      },
+
+      _dataSetValue: function(newVal, oldVal){
+          console.log(this.$.id11.byKey("x"));
+          console.log(this.$.id22.byKey("y"));
+      },
+
+      ready: function() {
+
+        this.scopeSubtree(this.$$('#' + this.plotID), true);
+
+        if(this.dataX != null && this.dataX.length > 0 && this.dataY != null && this.dataY.length > 0 ) {
+          this._draw();
+        }
+        else {
+          console.log("no data");
+        }
+      },
+
+      observers:[
+        '_dataXChanged(dataX.*)',
+        '_dataYChanged(dataY.*)'
+      ],
+
+
+      _dataXChanged: function(changeX, index){
+
+         if(this.dataX!= null && this.dataX.length > 0 && this.dataY!= null && this.dataY.length > 0 ) {
+            console.log("in _dataXChanged, will draw again");
+            this._draw();
+          }
+      },
+
+        _dataYChanged: function(changeY, index){
+
+         if(this.dataX!= null && this.dataX.length > 0 && this.dataY!= null && this.dataY.length > 0) {
+            console.log("in _dataYChanged, will draw again");
+            this._draw();
+          }
+      },
+
+      _draw: function(){
+        var width = 800;
+        var height = 500;
+        var padding = 40;
+
+        var dataX = this.dataX;
+        var dataY = this.dataY;
+
+        console.log(dataX);
+        console.log(dataY);
+        
+        var scaleX = d3.scale.linear().domain([0, d3.max(dataX, function(d){ return d;})]).range([padding,width - padding]);
+        var scaleY = d3.scale.linear().domain([0, d3.max(dataY, function(d){ return d;})]).range([height-padding, padding]);
+
+        console.log(this.plotID);
+
+        var svg = d3.select('#' + this.plotID).append("svg")
+                      .attr("width", width)
+                      .attr("height", height);
+        console.log(svg);
+        var xAxis = d3.svg.axis();
+        xAxis.scale(scaleX).orient("bottom").ticks(10);
+        //var xAxis = svg.call(d3.axisBottom(scaleX));
+
+        var yAxis = d3.svg.axis();
+        yAxis.scale(scaleY).orient("left").ticks(10);              
+        //var yAxis = svg.call(d3.axisLeft(scaleY));
+
+        svg.append("g")
+            .attr("class", "axis")
+            .attr("transform", "translate(0," + (height - padding) + ")")
+            .call(xAxis);
+
+        svg.append("g")
+            .attr("class", "axis")
+            .attr("transform", "translate(" + padding + ",0)")
+            .call(yAxis);
+
+        var circles = svg.selectAll("circle")
+        .data(dataY)
+        .enter()
+        .append("circle");
+        circles.attr("cx", function(d, i) { 
+                        return scaleX(dataX[i]);
+                })
+                .attr("cy", function(d, i){
+                        return scaleY(dataY[i]);
+                }) 
+                .attr("r", 3.5)
+                .attr("fill", "yellow") .attr("stroke", "orange");
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,79 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<script src="../jquery/dist/jquery.js"></script>
+<script src="../iron-meta/iron-meta.html"></script>
+
+<dom-module id="data-source">
+
+<template>
+	
+	<style>
+	:host{
+		display: inline-block;
+	}
+	</style>
+
+	<span> data is fetched from {{dataUrl}} </span></br>
+	<span> data length is {{dataResponse.length}}</span></br>
+	<span>data is {{dataResponse}}</span>
+	<div> Data from data source is {{dataResponse}}</div>
+
+</template>
+
+<script>
+
+Polymer({
+	is:'data-source',
+	properties:{
+		dataResponse:{
+			type: Array,
+			notify: true,
+          readOnly: true,
+          observer: '_dataResponseupdate'
+		},
+
+		dataUrl:{
+			type: String,
+			notify: true
+		},
+
+		datasourceId: {
+			type: String,
+			notify: true
+		}
+	},
+
+	// fetch data from dataX.json and dataY.json
+	ready: function(){
+		var self = this;
+		$.get(this.dataUrl, function(json) {
+			console.log(json);
+		 	self._setDataResponse(json);
+		 });		
+	},
+
+	_dataResponseupdate: function(newVal, oldVal) {
+		console.log("response Value Changed");
+		// Create <iron-meta> and apppend it to parent(index.html)
+		var newElem = document.createElement('iron-meta');
+		newElem.key = this.datasourceId;
+		newElem.value = this.dataResponse;
+
+		 Polymer.dom(this).parentNode.appendChild(newElem);
+		 Polymer.dom.flush();
+
+		 // This code call _dataCreated() of <wrapper-el> manually. I want to get rid of it
+		 // by using  https://www.polymer-project.org/1.0/docs/devguide/local-dom#observe-nodes
+		 // when dataX and dataY were added to the dom, the dom obsever from the link should notice about that 
+		 // and call _dataCreated()
+		 
+		 if(this.datasourceId == "ds2") {
+		 	Polymer.dom(this).parentNode.querySelector('#plot1')._dataCreated();
+		 }
+	}
+	
+});
+
+</script>
+
+</dom-module>
