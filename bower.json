@@ -3,7 +3,8 @@
   "description": "A simple element to draw a scatter plot which has (x,y) values come from 2 files.",
   "main": "my-chart.html",
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.4.0"
+    "polymer": "Polymer/polymer#^1.4.0",
+    "iron-signals": "PolymerElements/iron-signals#^1.0.3"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",

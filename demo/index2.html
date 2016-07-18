@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+  <head>
+    <title>scatter-plot demo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../iron-meta/iron-meta.html"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+
+    
+    <link rel="import" href="../data-source.html">
+    <link rel="import" href="../wrapper-el.html">
+    
+  </head>
+  <body>
+    <template id="t" is="dom-bind">
+    <h3>Basic scatter-plot Demo</h3>
+
+    <data-source data-url="http://localhost:8080/data/dataX.json" data-response="{{toX}}" datasource-id="ds1"></data-source>
+
+    <data-source data-url="http://localhost:8080/data/dataY.json" data-response="{{toY}}" datasource-id="ds2"></data-source>
+
+    <wrapper-el id="plot1" data-x="{{toX}}" data-y="{{toY}}" key-x='{"key":"ds1","measurement":"x"}' key-y='{"key":"ds2","measurement":"y"}'></wrapper-el>
+  </template>
+
+  <script>
+
+    var t = document.querySelector('#t');
+
+    t.addEventListener('dom-change', function(){
+        console.log("in addEventListener");
+        var dataXX = this.dataX;
+    var dataYY = this.dataY;
+
+    console.log(dataXX);
+    console.log(dataYY);
+
+    // DO NOT DO THIS, USE TEMP variables
+    //this.dataX = [];
+    //this.dataY = [];
+    
+    var tempx =[], tempy=[];
+
+        for(var i = 0; i < dataXX.length; i++){
+          tempx.push(dataXX[i][this.keyX.measurement]);
+        }
+
+        for(var j = 0; j < dataYY.length; j++){
+          tempy.push(dataYY[j][this.keyY.measurement]);
+        }
+
+        this.dataX = tempx;
+        this.dataY = tempy;
+    
+        console.log("In _dataCreated");
+      console.log(this.dataX);
+      console.log(this.dataY);
+
+    });
+  
+  </script>
+
+  </body>
+</html>

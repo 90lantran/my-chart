@@ -2,22 +2,22 @@
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 <script src="../jquery/dist/jquery.js"></script>
 <script src="../iron-meta/iron-meta.html"></script>
+<script src="../iron-signals/iron-signals.html"></script>
  <link rel="import" href="my-chart.html">
 
-
-
 <dom-module id="wrapper-el">
-
 <template>
-	
 	<style>
 	:host{
 		display: inline-block;
 	}
 	</style>
 
-<iron-meta id="meta"></iron-meta>
+	<iron-meta id="meta"></iron-meta>
+	
 	<my-chart id="chart" data-x="{{dataX}}" data-y="{{dataY}}"></my-chart>
+
+	<!-- <iron-signal on-iron-signal-mysignal="{{_handleEvent}}"></iron-signal> -->
 </template>
 
 <script>
@@ -45,26 +45,71 @@ Polymer({
 		}
 	},
 
+	// listeners: {
+ //        'dataLoaded': 'updateAttribute'
+ //     },
+
+     _handleEvent: function(){
+     	console.log("In _handleEvent");
+     	this.updateAttribute();
+     },
+
+     updateAttribute: function(e) {
+     	console.log("In updateAttribute");
+      	console.log(e);
+      	if (this.keyX.key == e.id) {
+      		this.keyX.dataLoaded = true;
+      	}
+
+         if (this.keyY.key == e.id) {
+      		this.keyY.dataLoaded = true;
+      	}
+     },
+
+
+     attributeChanged: function() {
+
+     	if(this.keyX.key.dataLoaded == true && this.keyY.key.dataLoaded == true) {
+  			this._dataCreated();
+  		}
+
+     },
+
 	// This code  was implemented to get rid of line 68 in data-source.html
 	// but it does not work for now
 	
-	// ready: function(){
- //  		console.log("in ready of measurement-el");
- //  		var self = this;
- //  		this._observer= Polymer.dom(Polymer.dom(this).parentNode).observeNodes(function(info){
- //  			if (info.target.lastElementChild.keyX != null && info.target.lastElementChild.keyY != null){
- //  				self._dataCreated();
- //  			}
+	ready: function(){
+  		console.log("in ready of wrapper-el");
+  		// var self = this;
+  		// var domObserver = Polymer.dom(Polymer.dom(this).parentNode).observeNodes(function(info){
+  		// 	console.log(info);
+  		// 	console.log($(info.target));
+
+  		// 	console.log($(info.target).find('#' + self.keyX.key));
+
+  		// 	if($(info.target).find('#' + self.keyX.key) != null && $(info.target).find('#' + self.keyY.key) != null) {
+  		// 		self._dataCreated();
+  		// 	}
+
+  		// 	//if (info.target.lastElementChild.keyX != null && info.target.lastElementChild.keyY != null){
+  		// 	//	self._dataCreated();
+  		// 	//}
   			
- //  		});	
-	// },
+  		// });	
+	//this._handleEvent();
+	
+	},
 
 	_dataCreated: function() {
 		// Pass data from the dom to dataX and dataY of <my-chart>, and plot
-		console.log(this.keyX);
-		console.log(this.keyY);
-		var dataXX = this.$.meta.byKey(this.keyX.key);
-		var dataYY = this.$.meta.byKey(this.keyY.key);
+		// console.log(this.keyX);
+		// console.log(this.keyY);
+
+		// var dataXX = this.$.meta.byKey(this.keyX.key);
+		// var dataYY = this.$.meta.byKey(this.keyY.key);
+
+		var dataXX = this.dataX;
+		var dataYY = this.dataY;
 
 		console.log(dataXX);
 		console.log(dataYY);
