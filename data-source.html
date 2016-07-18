@@ -27,10 +27,11 @@ Polymer({
 	is:'data-source',
 	properties:{
 		dataResponse:{
-			type: Array,
+			type: Object,
 			notify: true,
-          readOnly: true,
-          
+          	readOnly: true,
+          	reflectToAttribute: true
+          //observer:'_dataResponseupdate'
 		},
 
 		dataUrl:{
@@ -47,28 +48,32 @@ Polymer({
 
 	// fetch data from dataX.json and dataY.json
 	ready: function(){
+		console.log("in ready of data-source");
 		var self = this;
 		$.get(this.dataUrl, function(json) {
 			console.log(json);
 		 	self._setDataResponse(json);
+		 	//self.dataResponse = json;
+
+		 	console.log(self);
 		 });
-		 
-	}
+		
+	},
 
-	// _dataResponseupdate: function(newVal, oldVal) {
-	// 	console.log("response Value Changed");
-	// 	// Create <iron-meta> and apppend it to parent(index.html)
-	// 	var newElem = document.createElement('iron-meta');
-	// 	newElem.key = this.datasourceId;
-	// 	newElem.id = this.datasourceId;
-	// 	newElem.value = this.dataResponse;
+	_dataResponseupdate: function(newVal, oldVal) {
+		console.log("response Value Changed");
+		// Create <iron-meta> and apppend it to parent(index.html)
+		var newElem = document.createElement('iron-meta');
+		newElem.key = this.datasourceId;
+		newElem.id = this.datasourceId;
+		newElem.value = this.dataResponse;
 
-	// 	 Polymer.dom(this).parentNode.appendChild(newElem);
-	// 	 Polymer.dom.flush();
+		 Polymer.dom(this).parentNode.appendChild(newElem);
+		 Polymer.dom.flush();
 
 
-	// 	  // this.fire('iron-signal', {name: "mysignal", value: "1234"});
-	// 	  // console.log("Fire iron-signals");
+		  // this.fire('iron-signal', {name: 'hello', data: "1234"});
+		  // console.log("Fire iron-signals");
 
 	// 	 // This code call _dataCreated() of <wrapper-el> manually. I want to get rid of it
 	// 	 // by using  https://www.polymer-project.org/1.0/docs/devguide/local-dom#observe-nodes
@@ -78,7 +83,7 @@ Polymer({
 	// 	 // if(this.datasourceId == "ds2") {
 	// 	 // 	Polymer.dom(this).parentNode.querySelector('#plot1')._dataCreated();
 	// 	 // }
-	// }
+	}
 	
 });
 

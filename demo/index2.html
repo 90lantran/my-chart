@@ -19,45 +19,76 @@
     <template id="t" is="dom-bind">
     <h3>Basic scatter-plot Demo</h3>
 
-    <data-source data-url="http://localhost:8080/data/dataX.json" data-response="{{toX}}" datasource-id="ds1"></data-source>
+    <data-source id="a" data-url="http://localhost:8080/data/dataX.json" data-response="{{dataA}}" datasource-id="ds1"></data-source>
 
-    <data-source data-url="http://localhost:8080/data/dataY.json" data-response="{{toY}}" datasource-id="ds2"></data-source>
+    <data-source id="b" data-url="http://localhost:8080/data/dataY.json"  data-response="{{dataB}}" datasource-id="ds2"></data-source>
 
-    <wrapper-el id="plot1" data-x="{{toX}}" data-y="{{toY}}" key-x='{"key":"ds1","measurement":"x"}' key-y='{"key":"ds2","measurement":"y"}'></wrapper-el>
+    <wrapper-el id="plot1" data-tempx="{{dataA}}" data-tempy="{{dataB}}" key-x='{"key":"ds1","measurement":"x"}' key-y='{"key":"ds2","measurement":"y"}'></wrapper-el>
   </template>
 
   <script>
 
+
     var t = document.querySelector('#t');
 
-    t.addEventListener('dom-change', function(){
-        console.log("in addEventListener");
-        var dataXX = this.dataX;
-    var dataYY = this.dataY;
+          console.log(t.dataA);
+      console.log(t.dataB);
 
-    console.log(dataXX);
-    console.log(dataYY);
+    t.addEventListener('dom-change', function(){
+      console.log("in addEventListener");
+      console.log(this);
+
+      console.log(t.dataA);
+      console.log(t.dataB);
+
+      // var ds1 = document.querySelector('#a');
+      // var ds2 = document.querySelector('#b');
+      // console.log(ds1);
+      //  console.log(ds2);
+
+      // var tempx, tempy;
+
+      // if(ds1.dataResponse != null && ds1.dataResponse.length > 0 && ds2.dataResponse != null && ds2.dataResponse.length > 0) {
+      //         console.log(ds1.dataResponse);
+      //         console.log(ds2.dataResponse);
+
+      //         document.querySelector('#plot1').dataX = ds1.dataResponse;
+      //         document.querySelector('#plot1').dataY = ds2.dataResponse;
+
+      // }
+
+        
+    //     console.log("in addEventListener");
+    //     console.log(document.querySelector('#a'));
+    //     console.log(document.querySelector('#a').dataResponse);
+    //     var dataXX = document.querySelector('#a').dataResponse;
+    // var dataYY = this.toY;
+
+    // console.log(dataXX);
+    // console.log(dataYY);
 
     // DO NOT DO THIS, USE TEMP variables
     //this.dataX = [];
     //this.dataY = [];
     
-    var tempx =[], tempy=[];
+    //var tempx =[1,2,3], tempy=[5,6,7];
 
-        for(var i = 0; i < dataXX.length; i++){
-          tempx.push(dataXX[i][this.keyX.measurement]);
-        }
+      //   for(var i = 0; i < dataXX.length; i++){
+      //     tempx.push(dataXX[i][this.keyX.measurement]);
+      //   }
 
-        for(var j = 0; j < dataYY.length; j++){
-          tempy.push(dataYY[j][this.keyY.measurement]);
-        }
+      //   for(var j = 0; j < dataYY.length; j++){
+      //     tempy.push(dataYY[j][this.keyY.measurement]);
+      //   }
 
-        this.dataX = tempx;
-        this.dataY = tempy;
+      //   this.dataX = tempx;
+      //   this.dataY = tempy;
     
-        console.log("In _dataCreated");
-      console.log(this.dataX);
-      console.log(this.dataY);
+      //   console.log("In _dataCreated");
+      // console.log(this.dataX);
+      // console.log(this.dataY);
+
+
 
     });
   

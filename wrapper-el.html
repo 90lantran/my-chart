@@ -13,11 +13,11 @@
 	}
 	</style>
 
-	<iron-meta id="meta"></iron-meta>
+	<!-- <iron-meta id="meta"></iron-meta> -->
 	
 	<my-chart id="chart" data-x="{{dataX}}" data-y="{{dataY}}"></my-chart>
 
-	<!-- <iron-signal on-iron-signal-mysignal="{{_handleEvent}}"></iron-signal> -->
+	<!-- <iron-signals on-iron-signal-hello="_mySignalEvent"></iron-signals> -->
 </template>
 
 <script>
@@ -25,6 +25,16 @@
 Polymer({
 	is:'wrapper-el',
 	properties:{
+		dataTempx:{
+			type: Object,
+			notify: true,
+			observer: '_dataTempx'
+		},
+		dataTempy:{
+			type: Array,
+			notify: true,
+			observer: '_dataTempy'
+		},
 		keyX:{
 			type: Object,
 			notify: true
@@ -35,41 +45,59 @@ Polymer({
 		},
 		dataX: {
 			type: Array,
-			notify: true,
-			reflectToAttribute: true
+			notify: true
 		},
 		dataY: {
 			type: Array,
-			notify: true,
-			reflectToAttribute: true
+			notify: true
+		},
+		dataXLoaded:{
+			type:Boolean,
+			notify:true,
+			reflectToAttribute:true,
+			value:false
+		},
+		dataYLoaded:{
+			type:Boolean,
+			notify:true,
+			reflectToAttribute: true,
+			value:false
 		}
+	
+	},
+
+	_dataTempx: function(){
+			console.log(this.dataTempx);
+			this.dataXLoaded = true;
+	},
+
+	_dataTempy: function(){
+			console.log(this.dataTempy);
+			this.dataYLoaded = true;
 	},
 
 	// listeners: {
  //        'dataLoaded': 'updateAttribute'
  //     },
 
-     _handleEvent: function(){
-     	console.log("In _handleEvent");
-     	this.updateAttribute();
-     },
+   
 
-     updateAttribute: function(e) {
-     	console.log("In updateAttribute");
-      	console.log(e);
-      	if (this.keyX.key == e.id) {
-      		this.keyX.dataLoaded = true;
-      	}
+     // updateAttribute: function(e) {
+     // 	console.log("In updateAttribute");
+     //  	console.log(e);
+     //  	if (this.keyX.key == e.id) {
+     //  		this.keyX.dataLoaded = true;
+     //  	}
 
-         if (this.keyY.key == e.id) {
-      		this.keyY.dataLoaded = true;
-      	}
-     },
+     //     if (this.keyY.key == e.id) {
+     //  		this.keyY.dataLoaded = true;
+     //  	}
+     // },
 
 
      attributeChanged: function() {
-
-     	if(this.keyX.key.dataLoaded == true && this.keyY.key.dataLoaded == true) {
+     		console.log("In attributeChanged");
+     	if(this.dataXLoaded == true && this.dataYLoaded == true) {
   			this._dataCreated();
   		}
 
@@ -80,6 +108,10 @@ Polymer({
 	
 	ready: function(){
   		console.log("in ready of wrapper-el");
+
+  		console.log(this.dataTempx);
+
+  		console.log(this);
   		// var self = this;
   		// var domObserver = Polymer.dom(Polymer.dom(this).parentNode).observeNodes(function(info){
   		// 	console.log(info);
@@ -108,8 +140,8 @@ Polymer({
 		// var dataXX = this.$.meta.byKey(this.keyX.key);
 		// var dataYY = this.$.meta.byKey(this.keyY.key);
 
-		var dataXX = this.dataX;
-		var dataYY = this.dataY;
+		var dataXX = this.dataTempx;
+		var dataYY = this.dataTempy;
 
 		console.log(dataXX);
 		console.log(dataYY);
