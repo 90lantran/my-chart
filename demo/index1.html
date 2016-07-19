@@ -25,9 +25,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <div class="vertical-section vertical-section-container centered">
 
     <h1>&lt;iron-signal&gt;</h1>
-   <!--  <template is="dom-bind" id="my-app">
+    <template is="dom-bind" id="my-app">
       <iron-signals on-iron-signal-foo="fooSignal"></iron-signals>
-    </template> -->
+    </template> 
 
     <template is="dom-bind" id="signal-message">
       <template is="dom-if" if="{{detail}}">
@@ -44,6 +44,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     document.querySelector("#my-app").fooSignal = function(e, detail, sender) {
       document.querySelector("#signal-message").detail = detail;
     };
+
+    console.log(this);
   </script>
 
   </body>

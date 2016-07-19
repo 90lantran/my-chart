@@ -1,98 +1,46 @@
-<!doctype html>
-<html>
-  <head>
-    <title>scatter-plot demo</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="../../iron-meta/iron-meta.html"></script>
-
-    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
-    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-
-    
-    <link rel="import" href="../data-source.html">
-    <link rel="import" href="../wrapper-el.html">
-    
-  </head>
-  <body>
-    <template id="t" is="dom-bind">
-    <h3>Basic scatter-plot Demo</h3>
-
-    <data-source id="a" data-url="http://localhost:8080/data/dataX.json" data-response="{{dataA}}" datasource-id="ds1"></data-source>
-
-    <data-source id="b" data-url="http://localhost:8080/data/dataY.json"  data-response="{{dataB}}" datasource-id="ds2"></data-source>
-
-    <wrapper-el id="plot1" data-tempx="{{dataA}}" data-tempy="{{dataB}}" key-x='{"key":"ds1","measurement":"x"}' key-y='{"key":"ds2","measurement":"y"}'></wrapper-el>
-  </template>
-
-  <script>
-
-
-    var t = document.querySelector('#t');
-
-          console.log(t.dataA);
-      console.log(t.dataB);
-
-    t.addEventListener('dom-change', function(){
-      console.log("in addEventListener");
-      console.log(this);
-
-      console.log(t.dataA);
-      console.log(t.dataB);
-
-      // var ds1 = document.querySelector('#a');
-      // var ds2 = document.querySelector('#b');
-      // console.log(ds1);
-      //  console.log(ds2);
-
-      // var tempx, tempy;
-
-      // if(ds1.dataResponse != null && ds1.dataResponse.length > 0 && ds2.dataResponse != null && ds2.dataResponse.length > 0) {
-      //         console.log(ds1.dataResponse);
-      //         console.log(ds2.dataResponse);
-
-      //         document.querySelector('#plot1').dataX = ds1.dataResponse;
-      //         document.querySelector('#plot1').dataY = ds2.dataResponse;
-
-      // }
-
+    <!doctype html>
+    <html>
+      <head>
+        <title>scatter-plot demo</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+        <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+        <link rel="import" href="../data-source.html">
+        <link rel="import" href="../wrapper-el.html">
+      </head>
+      <body>
         
-    //     console.log("in addEventListener");
-    //     console.log(document.querySelector('#a'));
-    //     console.log(document.querySelector('#a').dataResponse);
-    //     var dataXX = document.querySelector('#a').dataResponse;
-    // var dataYY = this.toY;
+        <h3>Basic scatter-plot Demo</h3>
+      <template id="t" is="dom-bind">
+        <data-source id="a" data-url="http://localhost:8080/data/dataX.json" ></data-source>
+        <data-source id="b" data-url="http://localhost:8080/data/dataY.json" ></data-source>
+        <wrapper-el id="plot1" key-x='{"key":"ds1","measurement":"x"}' key-y='{"key":"ds2","measurement":"y"}'></wrapper-el>
+      </template>
 
-    // console.log(dataXX);
-    // console.log(dataYY);
+      <script>
 
-    // DO NOT DO THIS, USE TEMP variables
-    //this.dataX = [];
-    //this.dataY = [];
-    
-    //var tempx =[1,2,3], tempy=[5,6,7];
+        document.addEventListener("WebComponentsReady", function() { 
 
-      //   for(var i = 0; i < dataXX.length; i++){
-      //     tempx.push(dataXX[i][this.keyX.measurement]);
-      //   }
+        var ds1 = document.getElementById('a');
+        var ds2 = document.getElementById('b');
+        
+        console.log(ds1.dataResponse);
+        console.log(ds2.dataResponse);
 
-      //   for(var j = 0; j < dataYY.length; j++){
-      //     tempy.push(dataYY[j][this.keyY.measurement]);
-      //   }
+        if (ds1.dataResponse != null && ds2.dataResponse != null){
+          var wrapper = document.getElementById('plot1');
+          wrapper.dataTempx = ds1.dataResponse;
+          wrapper.dataTempy = ds2.dataResponse;
+        }
 
-      //   this.dataX = tempx;
-      //   this.dataY = tempy;
-    
-      //   console.log("In _dataCreated");
-      // console.log(this.dataX);
-      // console.log(this.dataY);
+        });
 
+        // Dont know why this listener which was mentioned in the doc did not work
+        // var t = document.querySelector('#t');
+        // t.addEventListener('dom-change', function(){
+        //   console.log("in dom-change");
 
-
-    });
-  
-  </script>
-
-  </body>
-</html>
+        // });
+      </script>
+    </body>
+  </html>

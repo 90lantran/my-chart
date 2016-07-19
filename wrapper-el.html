@@ -1,9 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 <script src="../jquery/dist/jquery.js"></script>
-<script src="../iron-meta/iron-meta.html"></script>
-<script src="../iron-signals/iron-signals.html"></script>
- <link rel="import" href="my-chart.html">
+<link rel="import" href="my-chart.html">
 
 <dom-module id="wrapper-el">
 <template>
@@ -12,12 +10,9 @@
 		display: inline-block;
 	}
 	</style>
-
-	<!-- <iron-meta id="meta"></iron-meta> -->
 	
 	<my-chart id="chart" data-x="{{dataX}}" data-y="{{dataY}}"></my-chart>
 
-	<!-- <iron-signals on-iron-signal-hello="_mySignalEvent"></iron-signals> -->
 </template>
 
 <script>
@@ -76,26 +71,7 @@ Polymer({
 			this.dataYLoaded = true;
 	},
 
-	// listeners: {
- //        'dataLoaded': 'updateAttribute'
- //     },
-
-   
-
-     // updateAttribute: function(e) {
-     // 	console.log("In updateAttribute");
-     //  	console.log(e);
-     //  	if (this.keyX.key == e.id) {
-     //  		this.keyX.dataLoaded = true;
-     //  	}
-
-     //     if (this.keyY.key == e.id) {
-     //  		this.keyY.dataLoaded = true;
-     //  	}
-     // },
-
-
-     attributeChanged: function() {
+    attributeChanged: function() {
      		console.log("In attributeChanged");
      	if(this.dataXLoaded == true && this.dataYLoaded == true) {
   			this._dataCreated();
@@ -112,23 +88,6 @@ Polymer({
   		console.log(this.dataTempx);
 
   		console.log(this);
-  		// var self = this;
-  		// var domObserver = Polymer.dom(Polymer.dom(this).parentNode).observeNodes(function(info){
-  		// 	console.log(info);
-  		// 	console.log($(info.target));
-
-  		// 	console.log($(info.target).find('#' + self.keyX.key));
-
-  		// 	if($(info.target).find('#' + self.keyX.key) != null && $(info.target).find('#' + self.keyY.key) != null) {
-  		// 		self._dataCreated();
-  		// 	}
-
-  		// 	//if (info.target.lastElementChild.keyX != null && info.target.lastElementChild.keyY != null){
-  		// 	//	self._dataCreated();
-  		// 	//}
-  			
-  		// });	
-	//this._handleEvent();
 	
 	},
 
