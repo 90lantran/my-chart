@@ -6,23 +6,25 @@
         <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
         <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
         <link rel="import" href="../data-source.html">
-        <link rel="import" href="../wrapper-el.html">
+        <link rel="import" href="../chart-env.html">
       </head>
       <body>
         
         <h3>Basic scatter-plot Demo</h3>
       <template id="t" is="dom-bind">
-        <data-source id="a" data-url="http://localhost:8080/data/dataX.json" ></data-source>
-        <data-source id="b" data-url="http://localhost:8080/data/dataY.json" ></data-source>
-        <wrapper-el id="plot1" key-x='{"key":"ds1","measurement":"x"}' key-y='{"key":"ds2","measurement":"y"}'></wrapper-el>
+        <data-source data-url="http://localhost:8080/data/dataX.json" datasource-id="ds1"></data-source>
+        <data-source data-url="http://localhost:8080/data/dataY.json" datasource-id="ds2"></data-source>
+        <chart-env id="plot1" key-x='{"key":"ds1","measurement":"x"}' key-y='{"key":"ds2","measurement":"y"}'>
+
+      </wrapper-el>
       </template>
 
       <script>
 
         document.addEventListener("WebComponentsReady", function() { 
 
-        var ds1 = document.getElementById('a');
-        var ds2 = document.getElementById('b');
+        var ds1 = document.querySelector('data-source[datasource-id$="ds1"]');
+        var ds2 = document.querySelector('data-source[datasource-id$="ds2"]');
         
         console.log(ds1.dataResponse);
         console.log(ds2.dataResponse);
