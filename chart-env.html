@@ -20,6 +20,10 @@
 Polymer({
 	is:'chart-env',
 	properties:{
+		envId:{
+			type: String,
+			notify: true
+		},
 		dataTempx:{
 			type: Object,
 			notify: true,
@@ -29,6 +33,10 @@ Polymer({
 			type: Array,
 			notify: true,
 			observer: '_dataTempy'
+		},
+		measurement:{
+			type: Array,
+			notify: true
 		},
 		keyX:{
 			type: Object,
@@ -110,13 +118,15 @@ Polymer({
 		//this.dataY = [];
 		
 		var tempx =[], tempy=[];
-
+		var m1 = this.measurement[0];
+		
         for(var i = 0; i < dataXX.length; i++){
-          tempx.push(dataXX[i][this.keyX.measurement]);
+          tempx.push(dataXX[i][m1.measurement]);
         }
 
+        var m2 = this.measurement[1];
         for(var j = 0; j < dataYY.length; j++){
-          tempy.push(dataYY[j][this.keyY.measurement]);
+          tempy.push(dataYY[j][m2.measurement]);
         }
 
         this.dataX = tempx;

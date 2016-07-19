@@ -14,9 +14,7 @@
       <template id="t" is="dom-bind">
         <data-source data-url="http://localhost:8080/data/dataX.json" datasource-id="ds1"></data-source>
         <data-source data-url="http://localhost:8080/data/dataY.json" datasource-id="ds2"></data-source>
-        <chart-env id="plot1" key-x='{"key":"ds1","measurement":"x"}' key-y='{"key":"ds2","measurement":"y"}'>
-
-      </wrapper-el>
+        <chart-env env-id="env" measurement='[{"key":"ds1","measurement":"x"}, {"key":"ds2","measurement":"y"}]'></chart-env>
       </template>
 
       <script>
@@ -30,9 +28,9 @@
         console.log(ds2.dataResponse);
 
         if (ds1.dataResponse != null && ds2.dataResponse != null){
-          var wrapper = document.getElementById('plot1');
-          wrapper.dataTempx = ds1.dataResponse;
-          wrapper.dataTempy = ds2.dataResponse;
+          var env = document.querySelector('chart-env[env-id$="env"]');
+          env.dataTempx = ds1.dataResponse;
+          env.dataTempy = ds2.dataResponse;
         }
 
         });
