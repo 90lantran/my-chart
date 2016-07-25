@@ -30,8 +30,8 @@ Polymer({
 			type: Object,
 			notify: true,
           	readOnly: true,
-          	reflectToAttribute: true
-          //observer:'_dataResponseupdate'
+          	reflectToAttribute: true,
+          	observer:'_dataResponseupdate'
 		},
 
 		dataUrl:{
@@ -56,14 +56,13 @@ Polymer({
 			console.log(json);
 		 	self._setDataResponse(json);
 		 	//self.dataResponse = json;
-
-		 	console.log(self);
+		 	//console.log(self);
 		 });
 		
 	},
 
 	_dataResponseupdate: function(newVal, oldVal) {
-		console.log("response Value Changed");
+		console.log("response value changed, use iron-meta");
 		// Create <iron-meta> and apppend it to parent(index.html)
 		var newElem = document.createElement('iron-meta');
 		newElem.key = this.datasourceId;

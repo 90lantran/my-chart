@@ -11,9 +11,11 @@
       <body>
         
         <h3>Basic scatter-plot Demo</h3>
-      <template id="t" is="dom-bind">
+      
         <data-source data-url="http://localhost:8080/data/dataX.json" datasource-id="ds1"></data-source>
         <data-source data-url="http://localhost:8080/data/dataY.json" datasource-id="ds2"></data-source>
+
+      <template id="t" is="dom-bind">
         <chart-env env-id="env" measurement='[{"key":"ds1","measurement":"x"}, {"key":"ds2","measurement":"y"}]'></chart-env>
       </template>
 
