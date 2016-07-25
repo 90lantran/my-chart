@@ -10,8 +10,8 @@
 		display: inline-block;
 	}
 	</style>
-	
-	<my-chart id="chart" data-x="{{dataX}}" data-y="{{dataY}}"></my-chart>
+
+	<content/>
 
 </template>
 
@@ -86,27 +86,61 @@ Polymer({
   		}
 
      },
-
-	// This code  was implemented to get rid of line 68 in data-source.html
-	// but it does not work for now
 	
 	ready: function(){
   		console.log("in ready of chart-env");
 
+  		this.asyncHandler = this.async(this.lookforDom, 1000);
+
+  		this.scopeSubtree(this, true);
+
+  		//this.debounce("datasourceHandler", lookforDom, 1000);
+
+  		// get list of datasources, make sure the dom has them available, if not conntinue calling the lookfordom function. If available, cancel the async process and call _datacreated
   		// console.log(this.dataTempx);
 
   		// console.log(this);
 	
 	},
 
+	// Use Async method to check if data were fetched into the dom or not
+	// if data were in the dom, bind them to chart-env, and cancel the listener
+	// if data were not there, keep looking. 
+	lookforDom : function() {
+
+		var self = this;
+
+		var allAvailable = true;
+
+		this.measurement.forEach(function(m) {
+			var elem = Polymer.dom(self).parentNode.querySelector('data-source[datasource-id$="' + m.key + '"]');
+
+			console.log(elem);
+
+			console.log(elem.dataResponse);
+
+			if(elem.dataResponse == undefined ) {
+				allAvailable = false;
+			}
+		});
+
+		console.log(allAvailable);
+
+		if(allAvailable == true) {
+			this.cancelAsync(this.asyncHandler);
+
+			var ds1 = document.querySelector('data-source[datasource-id$="ds1"]');
+        	var ds2 = document.querySelector('data-source[datasource-id$="ds2"]');
+
+			this.dataTempx = ds1.dataResponse;
+          	this.dataTempy = ds2.dataResponse;
+		}
+
+	},
+
+	// Pre-processing data will be here
+	// data from chart-env will be processed and return 2 arrays X and Y
 	_dataCreated: function() {
-		// Pass data from the dom to dataX and dataY of <my-chart>, and plot
-		// console.log(this.keyX);
-		// console.log(this.keyY);
-
-		// var dataXX = this.$.meta.byKey(this.keyX.key);
-		// var dataYY = this.$.meta.byKey(this.keyY.key);
-
 		var dataXX = this.dataTempx;
 		var dataYY = this.dataTempy;
 

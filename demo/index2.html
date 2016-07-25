@@ -8,34 +8,39 @@
         <link rel="import" href="../data-source.html">
         <link rel="import" href="../chart-env.html">
       </head>
-      <body>
-        
+
+      <body>  
         <h3>Basic scatter-plot Demo</h3>
-      
+        
+       <!--  Fetch data to the DOM of index.html -->
         <data-source data-url="http://localhost:8080/data/dataX.json" datasource-id="ds1"></data-source>
         <data-source data-url="http://localhost:8080/data/dataY.json" datasource-id="ds2"></data-source>
 
-      <template id="t" is="dom-bind">
-        <chart-env env-id="env" measurement='[{"key":"ds1","measurement":"x"}, {"key":"ds2","measurement":"y"}]'></chart-env>
-      </template>
+        <!--  Must use dom-bind to do binding between char-env and my-chart -->
+        <template id="t" is="dom-bind"> 
+          <chart-env env-id="env" measurement='[{"key":"ds1","measurement":"x"}, {"key":"ds2","measurement":"y"}]' data-x='{{dataX}}' data-y='{{dataY}}'>
+            <my-chart id="chart" data-x="{{dataX}}" data-y="{{dataY}}"></my-chart>
+          </chart-env>
+        </template> 
 
+        <!-- Do not need any script -->
       <script>
 
-        document.addEventListener("WebComponentsReady", function() { 
+        // document.addEventListener("WebComponentsReady", function() { 
 
-        var ds1 = document.querySelector('data-source[datasource-id$="ds1"]');
-        var ds2 = document.querySelector('data-source[datasource-id$="ds2"]');
+        // var ds1 = document.querySelector('data-source[datasource-id$="ds1"]');
+        // var ds2 = document.querySelector('data-source[datasource-id$="ds2"]');
         
-        console.log(ds1.dataResponse);
-        console.log(ds2.dataResponse);
+        // console.log(ds1.dataResponse);
+        // console.log(ds2.dataResponse);
 
-        if (ds1.dataResponse != null && ds2.dataResponse != null){
-          var env = document.querySelector('chart-env[env-id$="env"]');
-          env.dataTempx = ds1.dataResponse;
-          env.dataTempy = ds2.dataResponse;
-        }
+        //if (ds1.dataResponse != null && ds2.dataResponse != null){
+        //   var env = document.querySelector('chart-env[env-id$="env"]');
+        //   env.dataTempx = ds1.dataResponse;
+        //   env.dataTempy = ds2.dataResponse;
+        // }
 
-        });
+        // });
 
         // Dont know why this listener which was mentioned in the doc did not work
         // var t = document.querySelector('#t');

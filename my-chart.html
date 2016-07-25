@@ -25,9 +25,8 @@
         font-size:  13px;
       }
     </style>
-    <iron-meta id="id11"> </iron-meta>
-    <iron-meta id="id22"> </iron-meta>
-    <div id$="{{plotID}}"> </div>
+
+    <div id="{{plotID}}"> </div>
   </template>
 
   <script>
@@ -55,15 +54,15 @@
 
         data: {
           type: String,
-          notify: true,
-          observer: '_dataSetValue'
+          // notify: true,
+          // observer: '_dataSetValue'
         }
       },
 
-      _dataSetValue: function(newVal, oldVal){
-          console.log(this.$.id11.byKey("x"));
-          console.log(this.$.id22.byKey("y"));
-      },
+      // _dataSetValue: function(newVal, oldVal){
+      //     console.log(this.$.id11.byKey("x"));
+      //     console.log(this.$.id22.byKey("y"));
+      // },
 
       ready: function() {
 
@@ -115,7 +114,9 @@
 
         console.log(this.plotID);
 
-        var svg = d3.select('#' + this.plotID).append("svg")
+        var d3Node = this.$$('#' + this.plotID);
+
+        var svg = d3.select(d3Node).append("svg")
                       .attr("width", width)
                       .attr("height", height);
         console.log(svg);
