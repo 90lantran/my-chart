@@ -18,8 +18,8 @@
 
         <!--  Must use dom-bind to do binding between char-env and my-chart -->
         <template id="t" is="dom-bind"> 
-          <chart-env env-id="env" measurement='[{"key":"ds1","measurement":"x"}, {"key":"ds2","measurement":"y"}]' data-x='{{dataX}}' data-y='{{dataY}}'>
-            <my-chart id="chart" data-x="{{dataX}}" data-y="{{dataY}}"></my-chart>
+          <chart-env env-id="env" measurement='{"firstDim":{"key":"ds1","measurement":"x"}},{"secondDim": {"key":"ds2","measurement":"y"}}'>
+            <my-chart id="chart" data-x="[]" data-y="[]">hello</my-chart>
           </chart-env>
         </template> 
 

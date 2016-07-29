@@ -35,7 +35,7 @@ Polymer({
 			observer: '_dataTempy'
 		},
 		measurement:{
-			type: Array,
+			type: Object,
 			notify: true
 		},
 		keyX:{
@@ -94,6 +94,14 @@ Polymer({
 
   		this.scopeSubtree(this, true);
 
+  		// Jayaram: look at here, can find the <my-chart>
+  		var chart = Polymer.dom(this).querySelector('#chart');
+  		
+  		console.log(chart);
+
+  		console.log(chart.dataX); // cannot access dataX of <my-chart>
+  		// the way to access was mentioned in the two links
+
   		//this.debounce("datasourceHandler", lookforDom, 1000);
 
   		// get list of datasources, make sure the dom has them available, if not conntinue calling the lookfordom function. If available, cancel the async process and call _datacreated
@@ -102,6 +110,12 @@ Polymer({
   		// console.log(this);
 	
 	},
+
+	// attached: function(){
+	// 	var chart = this.getContentChildren('#crucial');
+ //  		console.log(chart);
+ //  		console.log(chart.id);
+	// },
 
 	// Use Async method to check if data were fetched into the dom or not
 	// if data were in the dom, bind them to chart-env, and cancel the listener
