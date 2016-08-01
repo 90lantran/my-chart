@@ -31,7 +31,6 @@ Polymer({
 			notify: true,
           	readOnly: true,
           	reflectToAttribute: true
-          	//observer:'_dataResponseupdate'
 		},
 
 		dataUrl:{
@@ -45,9 +44,6 @@ Polymer({
 		}
 	},
 
-	getDataResponse: function(){
-		return this.dataResponse;
-	},
 	// fetch data from dataX.json and dataY.json
 	ready: function(){
 		console.log("in ready of data-source");
@@ -55,35 +51,7 @@ Polymer({
 		$.get(this.dataUrl, function(json) {
 			console.log(json);
 		 	self._setDataResponse(json);
-		 	//self.dataResponse = json;
-		 	//console.log(self);
-		 });
-		
-	},
-
-	_dataResponseupdate: function(newVal, oldVal) {
-		console.log("response value changed, use iron-meta");
-		// Create <iron-meta> and apppend it to parent(index.html)
-		var newElem = document.createElement('iron-meta');
-		newElem.key = this.datasourceId;
-		newElem.id = this.datasourceId;
-		newElem.value = this.dataResponse;
-
-		 Polymer.dom(this).parentNode.appendChild(newElem);
-		 Polymer.dom.flush();
-
-
-		  // this.fire('iron-signal', {name: 'hello', data: "1234"});
-		  // console.log("Fire iron-signals");
-
-	// 	 // This code call _dataCreated() of <wrapper-el> manually. I want to get rid of it
-	// 	 // by using  https://www.polymer-project.org/1.0/docs/devguide/local-dom#observe-nodes
-	// 	 // when dataX and dataY were added to the dom, the dom obsever from the link should notice about that 
-	// 	 // and call _dataCreated()
-		 
-	// 	 // if(this.datasourceId == "ds2") {
-	// 	 // 	Polymer.dom(this).parentNode.querySelector('#plot1')._dataCreated();
-	// 	 // }
+		 });	
 	}
 	
 });

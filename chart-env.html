@@ -4,190 +4,143 @@
 <link rel="import" href="my-chart.html">
 
 <dom-module id="chart-env">
+
 <template>
 	<style>
-	:host{
-		display: inline-block;
-	}
+		:host{
+			display: inline-block;
+		}
 	</style>
-
-	<content/>
-
+	<content id="chartEnv"></content>
 </template>
 
 <script>
 
 Polymer({
-	is:'chart-env',
-	properties:{
-		envId:{
-			type: String,
-			notify: true
-		},
-		dataTempx:{
-			type: Object,
-			notify: true,
-			observer: '_dataTempx'
-		},
-		dataTempy:{
-			type: Array,
-			notify: true,
-			observer: '_dataTempy'
-		},
-		measurement:{
-			type: Object,
-			notify: true
-		},
-		keyX:{
-			type: Object,
-			notify: true
-		},
-		keyY:{
-			type: Object,
-			notify: true
-		},
-		dataX: {
-			type: Array,
-			notify: true
-		},
-		dataY: {
-			type: Array,
-			notify: true
-		},
-		dataXLoaded:{
-			type:Boolean,
-			notify:true,
-			reflectToAttribute:true,
-			value:false
-		},
-		dataYLoaded:{
-			type:Boolean,
-			notify:true,
-			reflectToAttribute: true,
-			value:false
-		}
-	
+is:'chart-env',
+properties:{
+	dataTempx:{
+		type: Array,
+		notify: true,
+		observer: '_dataTempx'
 	},
-
-	_dataTempx: function(){
-			console.log(this.dataTempx);
-			this.dataXLoaded = true;
+	dataTempy:{
+		type: Array,
+		notify: true,
+		observer: '_dataTempy'
 	},
-
-	_dataTempy: function(){
-			console.log(this.dataTempy);
-			this.dataYLoaded = true;
+	measurement:{
+		type: Object,
+		notify: true
 	},
-
-    attributeChanged: function() {
-     		console.log("In attributeChanged");
-     	if(this.dataXLoaded == true && this.dataYLoaded == true) {
-  			this._dataCreated();
-  		}
-
-     },
-	
-	ready: function(){
-  		console.log("in ready of chart-env");
-
-  		this.asyncHandler = this.async(this.lookforDom, 1000);
-
-  		this.scopeSubtree(this, true);
-
-  		// Jayaram: look at here, can find the <my-chart>
-  		var chart = Polymer.dom(this).querySelector('#chart');
-  		
-  		console.log(chart);
-
-  		console.log(chart.dataX); // cannot access dataX of <my-chart>
-  		// the way to access was mentioned in the two links
-
-  		//this.debounce("datasourceHandler", lookforDom, 1000);
-
-  		// get list of datasources, make sure the dom has them available, if not conntinue calling the lookfordom function. If available, cancel the async process and call _datacreated
-  		// console.log(this.dataTempx);
-
-  		// console.log(this);
-	
+	dataXLoaded:{
+		type:Boolean,
+		notify:true,
+		reflectToAttribute:true,
+		value:false
 	},
-
-	// attached: function(){
-	// 	var chart = this.getContentChildren('#crucial');
- //  		console.log(chart);
- //  		console.log(chart.id);
-	// },
-
-	// Use Async method to check if data were fetched into the dom or not
-	// if data were in the dom, bind them to chart-env, and cancel the listener
-	// if data were not there, keep looking. 
-	lookforDom : function() {
-
-		var self = this;
-
-		var allAvailable = true;
-
-		this.measurement.forEach(function(m) {
-			var elem = Polymer.dom(self).parentNode.querySelector('data-source[datasource-id$="' + m.key + '"]');
-
-			console.log(elem);
-
-			console.log(elem.dataResponse);
-
-			if(elem.dataResponse == undefined ) {
-				allAvailable = false;
-			}
-		});
-
-		console.log(allAvailable);
-
-		if(allAvailable == true) {
-			this.cancelAsync(this.asyncHandler);
-
-			var ds1 = document.querySelector('data-source[datasource-id$="ds1"]');
-        	var ds2 = document.querySelector('data-source[datasource-id$="ds2"]');
-
-			this.dataTempx = ds1.dataResponse;
-          	this.dataTempy = ds2.dataResponse;
-		}
-
-	},
-
-	// Pre-processing data will be here
-	// data from chart-env will be processed and return 2 arrays X and Y
-	_dataCreated: function() {
-		var dataXX = this.dataTempx;
-		var dataYY = this.dataTempy;
-
-		console.log(dataXX);
-		console.log(dataYY);
-
-		// DO NOT DO THIS, USE TEMP variables
-		//this.dataX = [];
-		//this.dataY = [];
-		
-		var tempx =[], tempy=[];
-		var m1 = this.measurement[0];
-		
-        for(var i = 0; i < dataXX.length; i++){
-          tempx.push(dataXX[i][m1.measurement]);
-        }
-
-        var m2 = this.measurement[1];
-        for(var j = 0; j < dataYY.length; j++){
-          tempy.push(dataYY[j][m2.measurement]);
-        }
-
-        this.dataX = tempx;
-        this.dataY = tempy;
-		
-		console.log("In _dataCreated");
-		console.log(this.dataX);
-		console.log(this.dataY);
-														 
+	dataYLoaded:{
+		type:Boolean,
+		notify:true,
+		reflectToAttribute: true,
+		value:false
 	}
-	
+
+},
+
+_dataTempx: function(){
+		console.log(this.dataTempx);
+		this.dataXLoaded = true;
+},
+
+_dataTempy: function(){
+		console.log(this.dataTempy);
+		this.dataYLoaded = true;
+},
+
+attributeChanged: function() {
+ 	console.log("In attributeChanged");
+ 	if(this.dataXLoaded == true && this.dataYLoaded == true) {
+			this._dataCreated();
+	}
+ },
+
+ready: function(){
+		console.log("in ready of chart-env");
+
+		this.asyncHandler = this.async(this.lookforDom, 1000);
+
+		this.scopeSubtree(this, true);
+
+		var ds1 = this.measurement.firstDim.ds;
+		var ds2 = this.measurement.secondDim.ds;
+
+		if (ds1 != null && ds2 != null ){
+			this.lookforDom();
+		} 
+},
+
+// Use Async method to check if data were fetched into the dom or not
+// if data were in the dom, bind them to chart-env, and cancel the listener
+// if data were not there, keep looking. 
+lookforDom : function() {
+
+	var self = this;
+
+	var allAvailable = true;
+
+	var measKeys = Object.keys(this.measurement);
+
+	console.log(measKeys);
+
+	measKeys.forEach(function(mk) {
+		m = self.measurement[mk];
+		var elem = Polymer.dom(self).parentNode.querySelector('data-source[datasource-id$="' + m.ds + '"]');
+		if(elem.dataResponse == undefined ) {
+			allAvailable = false;
+		}
+	});
+
+	console.log(allAvailable);
+
+	if(allAvailable == true) {
+		this.cancelAsync(this.asyncHandler);
+		var ds1 = document.querySelector('data-source[datasource-id$="ds1"]');
+    	var ds2 = document.querySelector('data-source[datasource-id$="ds2"]');
+		this.dataTempx = ds1.dataResponse;
+      	this.dataTempy = ds2.dataResponse;
+	}
+
+},
+
+// Pre-processing data
+// dataRepsonse from  <data-source> will be processed , 
+// and bind them to dataX and dataY of chart  
+_dataCreated: function() {
+	var dataXX = this.dataTempx;
+	var dataYY = this.dataTempy;
+
+	var self = this;
+
+	var measKeys = Object.keys(this.measurement);
+
+	measKeys.forEach(function(mk){
+		var currMea = self.measurement[mk]; // {ds : measurement}
+		self[mk] = [];
+		for(var i = 0; i < dataXX.length; i++){
+	          self[mk].push(dataXX[i][currMea.measurement]);
+	     }
+	});
+
+	var numChildren = self.getEffectiveChildren().length;
+	for(var index = 0; index < numChildren; index++){
+		var currentChild = self.getContentChildren('#chartEnv')[index];
+		currentChild.dataX = self[currentChild.dimX];
+		currentChild.dataY = self[currentChild.dimY];
+	}												 
+}
+
 });
 
 </script>
-
 </dom-module>
