@@ -19,6 +19,11 @@
 Polymer({
 is:'chart-env',
 properties:{
+	dataTemp:{
+		type:Array,
+		value:[],
+		observer: '_dataTemp'
+	},
 	dataTempx:{
 		type: Array,
 		notify: true,
@@ -32,6 +37,12 @@ properties:{
 	measurement:{
 		type: Object,
 		notify: true
+	},
+	dataLoaded:{
+		type: Boolean,
+		notify: true,
+		reflectToAttribute: true,
+		value : false
 	},
 	dataXLoaded:{
 		type:Boolean,
@@ -48,6 +59,11 @@ properties:{
 
 },
 
+_dataTemp: function(){
+	console.log(this.dataTemp);
+	this.dataLoaded = true;
+},
+
 _dataTempx: function(){
 		console.log(this.dataTempx);
 		this.dataXLoaded = true;
@@ -60,6 +76,9 @@ _dataTempy: function(){
 
 attributeChanged: function() {
  	console.log("In attributeChanged");
+ 	if (this.dataLoaded == true){
+ 		this._dataCreated();
+ 	}
  	if(this.dataXLoaded == true && this.dataYLoaded == true) {
 			this._dataCreated();
 	}
@@ -72,10 +91,27 @@ ready: function(){
 
 		this.scopeSubtree(this, true);
 
-		var ds1 = this.measurement.firstDim.ds;
-		var ds2 = this.measurement.secondDim.ds;
+		// var ds1 = this.measurement.firstDim.ds;
+		// var ds2 = this.measurement.secondDim.ds;
 
-		if (ds1 != null && ds2 != null ){
+		var self = this;
+
+		var measKeys = Object.keys(this.measurement);
+
+		var validDs = true;
+
+		measKeys.forEach(function(mk){
+			var currMea = self.measurement[mk]; // {ds : measurement}
+			if (currMea.ds != null){
+				validDs = validDs && true;
+			} else {
+				validDs = validDs && false;
+			} 
+		
+		});
+
+
+		if (validDs){
 			this.lookforDom();
 		} 
 },
@@ -89,7 +125,7 @@ lookforDom : function() {
 
 	var allAvailable = true;
 
-	var measKeys = Object.keys(this.measurement);
+	var measKeys = Object.keys(this.measurement); // firstDim, secondDim, thirdDim, ...
 
 	console.log(measKeys);
 
@@ -103,8 +139,15 @@ lookforDom : function() {
 
 	console.log(allAvailable);
 
+	// When dataResponse available, push them to dataTemp
 	if(allAvailable == true) {
 		this.cancelAsync(this.asyncHandler);
+		measKeys.forEach(function(mk) {
+			m = self.measurement[mk];
+			var elem = Polymer.dom(self).parentNode.querySelector('data-source[datasource-id$="' + m.ds + '"]');
+			self.dataTemp[m.ds] = elem.dataResponse;
+		});
+		
 		var ds1 = document.querySelector('data-source[datasource-id$="ds1"]');
     	var ds2 = document.querySelector('data-source[datasource-id$="ds2"]');
 		this.dataTempx = ds1.dataResponse;

@@ -1,0 +1,30 @@
+    <!doctype html>
+    <html>
+      <head>
+        <title>scatter-plot demo</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+        <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+        <link rel="import" href="../data-source.html">
+        <link rel="import" href="../chart-env.html">
+      </head>
+
+      <body>  
+        <h3>Basic scatter-plot Demo</h3>
+        
+       <!--  Add data to the DOM of index.html -->
+        <data-source data-url="http://localhost:8080/data/dataX.json" datasource-id="ds1"></data-source>
+        <data-source data-url="http://localhost:8080/data/dataY.json" datasource-id="ds2"></data-source>
+        <data-source data-url="http://localhost:8080/data/dataZ.json" datasource-id="ds3"></data-source>
+      
+       <!--  Nested polymer element -->
+          <chart-env measurement='{"firstDim":{"ds":"ds1","measurement":"x"},"secondDim": {"ds":"ds2","measurement":"y"},
+                                   "thirdDim":{"ds":"ds3","measurement":"z"}}'>
+            
+            <my-chart id="chart1" dim-x="firstDim" dim-y="thirdDim"></my-chart>
+            <my-chart id="chart2" dim-x="secondDim" dim-y="thirdDim"></my-chart>
+
+          </chart-env>
+          
+    </body>
+  </html>
