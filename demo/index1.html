@@ -43,6 +43,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
     document.querySelector("#my-app").fooSignal = function(e, detail, sender) {
       document.querySelector("#signal-message").detail = detail;
+      document.querySelector("#signal-message").detail += " " + e;
+      console.log(e);
     };
 
     console.log(this);

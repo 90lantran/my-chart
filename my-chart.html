@@ -1,7 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <script src="../jquery/dist/jquery.js"></script>
 <script src="../d3/d3.min.js"></script> 
-
+<script type="../iron-signals/iron-signals.html"></script>
 <dom-module id="my-chart">
   <template>
     <style>
@@ -71,14 +71,64 @@
         }
       },
 
-      // _dataSetValue: function(newVal, oldVal){
-      //     console.log(this.$.id11.byKey("x"));
-      //     console.log(this.$.id22.byKey("y"));
-      // },
+      listeners:{
+        'hoverAllCharts':'highlight'
+      },
+
+      highlight: function(e){
+        var self = this;
+        console.log(e);
+        console.log(this.plotID);
+        var d3Node = this.$$('#' + this.plotID);
+        var d3Svg = d3.select(d3Node).select("svg");
+
+        var event = e.detail.data;
+
+        console.log(e.detail.data);
+
+        if (self.dimX == event.key) {
+          d3Svg.append("line")
+          .attr("x1",self.scaleX(event.data))
+          .attr("y1",self.scaleY(self.miny))
+          .attr("x2",self.scaleX(event.data))
+          .attr("y2",self.scaleY(self.maxy))
+          .style("stroke", "grey")
+          .style("stroke-width", 2);
+        }
+        else if (self.dimY == event.key ) {
+          d3Svg.append("line")
+          .attr("x1",self.scaleX(self.minx))
+          .attr("y1",self.scaleY(event.data))
+          .attr("x2",self.scaleX(self.maxx))
+          .attr("y2",self.scaleY(event.data))
+          .style("stroke", "grey")
+          .style("stroke-width", 2);
+        }
+ 
+
+      },
+
+      unHighlight: function() {
+        var d3Node = this.$$('#' + this.plotID);
+        var d3Svg = d3.select(d3Node).select("svg").selectAll("line").remove();
+      },
 
       ready: function() {
 
+        var self = this;
+
         this.scopeSubtree(this.$$('#' + this.plotID), true);
+
+
+        var parent = this.parentNode;
+
+        parent.addEventListener('hoverAllCharts', function(e) {
+          self.highlight(e);
+        }.bind(this));
+
+        parent.addEventListener('unHoverAllCharts', function(e) {
+          self.unHighlight(e);
+        }.bind(this));
 
         if(this.dataX != null && this.dataX.length > 0 && this.dataY != null && this.dataY.length > 0 ) {
           this._draw();
@@ -111,18 +161,29 @@
       },
 
       _draw: function(){
-        var width = 800;
-        var height = 500;
-        var padding = 40;
+        var self = this;
+        var width = 300;
+        var height = 300;
+        var padding = 20;
 
         var dataX = this.dataX;
         var dataY = this.dataY;
 
         console.log(dataX);
         console.log(dataY);
+
+        self.maxx = d3.max(dataX);
+        self.minx = d3.min(dataX);
+
+        self.maxy = d3.max(dataY);
+        self.miny = d3.min(dataY);
         
         var scaleX = d3.scale.linear().domain([0, d3.max(dataX, function(d){ return d;})]).range([padding,width - padding]);
         var scaleY = d3.scale.linear().domain([0, d3.max(dataY, function(d){ return d;})]).range([height-padding, padding]);
+
+
+        self.scaleX = scaleX;
+        self.scaleY = scaleY;
 
         console.log(this.plotID);
 
@@ -161,7 +222,16 @@
                         return scaleY(dataY[i]);
                 }) 
                 .attr("r", 3.5)
-                .attr("fill", "yellow") .attr("stroke", "orange");
+                .attr("fill", "yellow") .attr("stroke", "orange")
+                .on("mouseover", function(d){
+                  console.log(d);
+                  self.fire('hover',{data: d, key:self.dimY});
+                  console.log("Fire !!!!! ");
+
+                })
+                .on("mouseout", function(d) {
+                  self.fire('unHover');
+                });
       }
     });
   </script>

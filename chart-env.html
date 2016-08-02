@@ -38,6 +38,11 @@ properties:{
 	// }
 },
 
+	listeners:{
+		'hover': 'onHover',
+		'unHover': 'onUnhover'
+	},
+
 // _dataTemp: function(){
 // 	console.log(this.dataTemp);
 // 	this.dataLoaded = true;
@@ -52,6 +57,19 @@ properties:{
 // 	// 		this._dataCreated();
 // 	// }
 //  },
+
+onHover: function(e){
+	var self = this;
+
+	console.log("in onHover of chart-env");
+	this.fire('hoverAllCharts',
+		{data: e.detail} 
+		);
+},
+
+onUnhover: function(e) {
+	this.fire('unHoverAllCharts');
+},
 
 ready: function(){
 		console.log("in ready of chart-env");
