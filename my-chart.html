@@ -1,7 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <script src="../jquery/dist/jquery.js"></script>
 <script src="../d3/d3.min.js"></script> 
-<script type="../iron-signals/iron-signals.html"></script>
 <dom-module id="my-chart">
   <template>
     <style>
@@ -14,10 +13,6 @@
         fill: none;
         stroke: black;
         shape-rendering: crispEdges;
-      }
-
-      circle {
-        fill: #ff0000;
       }
 
       .axis text {
@@ -64,15 +59,6 @@
           }
         },
 
-        data: {
-          type: String,
-          // notify: true,
-          // observer: '_dataSetValue'
-        }
-      },
-
-      listeners:{
-        'hoverAllCharts':'highlight'
       },
 
       highlight: function(e){
@@ -82,35 +68,41 @@
         var d3Node = this.$$('#' + this.plotID);
         var d3Svg = d3.select(d3Node).select("svg");
 
-        var event = e.detail.data;
+        var event = e.detail.data.data;
 
         console.log(e.detail.data);
 
-        if (self.dimX == event.key) {
-          d3Svg.append("line")
-          .attr("x1",self.scaleX(event.data))
-          .attr("y1",self.scaleY(self.miny))
-          .attr("x2",self.scaleX(event.data))
-          .attr("y2",self.scaleY(self.maxy))
-          .style("stroke", "grey")
-          .style("stroke-width", 2);
-        }
-        else if (self.dimY == event.key ) {
-          d3Svg.append("line")
-          .attr("x1",self.scaleX(self.minx))
-          .attr("y1",self.scaleY(event.data))
-          .attr("x2",self.scaleX(self.maxx))
-          .attr("y2",self.scaleY(event.data))
-          .style("stroke", "grey")
-          .style("stroke-width", 2);
-        }
- 
+        if(event[self.dimX]) {
 
+          var selNodes = d3Svg.selectAll('circle').filter(function(d) {
+            if(d[self.dimX] == event[self.dimX]) {
+              return true;
+            }
+
+            return false;
+          });
+
+          selNodes.attr("fill", "yellow").attr("stroke", "orange");
+
+        }
+        if(event[self.dimY]) {
+          var selNodes = d3Svg.selectAll('circle').filter(function(d) {
+            if(d[self.dimY] == event[self.dimY]) {
+              return true;
+            }
+            return false;
+          });
+          selNodes.attr("fill", "yellow").attr("stroke", "orange");
+        }
       },
 
       unHighlight: function() {
         var d3Node = this.$$('#' + this.plotID);
-        var d3Svg = d3.select(d3Node).select("svg").selectAll("line").remove();
+        var d3Svg = d3.select(d3Node).select("svg");
+
+        d3Svg.selectAll('circle').attr("fill", "red").attr("stroke", "blue");
+
+
       },
 
       ready: function() {
@@ -130,12 +122,13 @@
           self.unHighlight(e);
         }.bind(this));
 
-        if(this.dataX != null && this.dataX.length > 0 && this.dataY != null && this.dataY.length > 0 ) {
-          this._draw();
-        }
-        else {
-          console.log("no data");
-        }
+        // if(this.dataX != null && this.dataX.length > 0 && this.dataY != null && this.dataY.length > 0 ) {
+        //     console.log("call draw from ready");
+        //   this._draw();
+        // }
+        // else {
+        //   console.log("no data");
+        // }
       },
 
       observers:[
@@ -161,16 +154,37 @@
       },
 
       _draw: function(){
+        console.log("in _draw function");
         var self = this;
         var width = 300;
         var height = 300;
-        var padding = 20;
+        var padding = 30;
 
         var dataX = this.dataX;
         var dataY = this.dataY;
 
         console.log(dataX);
         console.log(dataY);
+
+        // line 174 - 179, just for the demo component_plot.html
+        // may remove later
+        if (self.dimX == undefined){
+            self.dimX = "firstDim";
+        }
+        if (self.dimY == undefined){
+            self.dimY = "secondDim";
+        }
+
+        var tData = [];
+
+        for (var i = 0; i< dataX.length; i++) {
+          var ttlist = {};
+          ttlist[self.dimX] = dataX[i];
+          ttlist[self.dimY] = dataY[i];
+          tData.push(ttlist);
+        }
+
+        console.log(tData);
 
         self.maxx = d3.max(dataX);
         self.minx = d3.min(dataX);
@@ -189,17 +203,17 @@
 
         var d3Node = this.$$('#' + this.plotID);
 
+        d3.select(d3Node).selectAll('svg').remove();
+
         var svg = d3.select(d3Node).append("svg")
                       .attr("width", width)
                       .attr("height", height);
         console.log(svg);
         var xAxis = d3.svg.axis();
-        xAxis.scale(scaleX).orient("bottom").ticks(10);
-        //var xAxis = svg.call(d3.axisBottom(scaleX));
-
+        xAxis.scale(scaleX).orient("bottom").ticks(dataX.length);
+      
         var yAxis = d3.svg.axis();
-        yAxis.scale(scaleY).orient("left").ticks(10);              
-        //var yAxis = svg.call(d3.axisLeft(scaleY));
+        yAxis.scale(scaleY).orient("left").ticks(dataY.length);              
 
         svg.append("g")
             .attr("class", "axis")
@@ -212,25 +226,27 @@
             .call(yAxis);
 
         var circles = svg.selectAll("circle")
-        .data(dataY)
+        .data(tData)
         .enter()
         .append("circle");
         circles.attr("cx", function(d, i) { 
-                        return scaleX(dataX[i]);
+                        return scaleX(d[self.dimX]);
                 })
                 .attr("cy", function(d, i){
-                        return scaleY(dataY[i]);
+                        return scaleY(d[self.dimY]);
                 }) 
                 .attr("r", 3.5)
-                .attr("fill", "yellow") .attr("stroke", "orange")
+                .attr("fill", "red").attr("stroke", "blue").attr("stroke-width", 2)
                 .on("mouseover", function(d){
                   console.log(d);
-                  self.fire('hover',{data: d, key:self.dimY});
-                  console.log("Fire !!!!! ");
-
+                  self.fire('hover',{data: d});
+                  var detail = {data: d};
+                  self.highlight({'detail': {'data': detail}});
+                  d3.select(this).attr("fill", "yellow").attr("stroke", "orange");
                 })
                 .on("mouseout", function(d) {
                   self.fire('unHover');
+                  d3.select(this).attr("fill", "red").attr("stroke", "blue");
                 });
       }
     });

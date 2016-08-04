@@ -10,18 +10,6 @@
       </head>
 
       <body>  
-        <h3>Basic scatter-plot Demo</h3>
-
-        <template is="dom-bind" id="my-app">
-          <iron-signals on-iron-signal-foo="fooSignal"></iron-signals>
-        </template> 
-
-        <template is="dom-bind" id="signal-message">
-          <template is="dom-if" if="{{detail}}">
-            <div><code>my-app</code> got a <code>{{detail}}</code> signal</div>
-          </template>
-        </template>
-        
        <!--  Add data to the DOM of index.html -->
         <data-source data-url="http://localhost:8080/data/dataX.json" datasource-id="ds1"></data-source>
         <data-source data-url="http://localhost:8080/data/dataY.json" datasource-id="ds2"></data-source>
@@ -29,6 +17,7 @@
        <!--  <data-source data-url="http://localhost:8080/data/dataT.json" datasource-id="ds4"></data-source> -->
       
        <!--  Nested polymer element -->
+          <h3>First environement</h3>
           <chart-env measurement='{"firstDim":{"ds":"ds1","measurement":"x"},"secondDim": {"ds":"ds2","measurement":"y"},
                                    "thirdDim":{"ds":"ds3","measurement":"z"}}'>
             
@@ -37,26 +26,17 @@
 
           </chart-env>
 
+           <h3>Second environement</h3>
           <chart-env measurement='{"firstDim":{"ds":"ds1","measurement":"x"},"secondDim": {"ds":"ds2","measurement":"y"},
                                    "thirdDim":{"ds":"ds3","measurement":"z"}}'>
             
             <my-chart id="chart1" dim-x="firstDim" dim-y="thirdDim"></my-chart>
             <my-chart id="chart2" dim-x="thirdDim" dim-y="secondDim"></my-chart>
+            <my-chart id="chart3" dim-x="secondDim" dim-y="firstDim"></my-chart>
+            <my-chart id="chart4" dim-x="secondDim" dim-y="secondDim"></my-chart>
 
           </chart-env>
 
-        <script>
-          document.addEventListener("WebComponentsReady", function() {
-            document.querySelector('#my-app').fire('iron-signal', {name: "foo", data: "Foo!"});
-            console.log("in addEventListener.");
-          });
-          document.querySelector("#my-app").fooSignal = function(e, detail, sender) {
-            document.querySelector("#signal-message").detail = detail;
-            console.log("in querySelector");
-          };
-
-        
-        </script>  
           
     </body>
   </html>

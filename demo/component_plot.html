@@ -1,0 +1,40 @@
+    <!doctype html>
+    <html>
+    <head>
+      <title>scatter-plot demo</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+      <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+      <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+      <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+      <link rel="import" href="../data-source.html">
+      <link rel="import" href="../chart-env.html">
+    </head>
+    <body>  
+
+  <div class="vertical-section-container centered">
+    <demo-snippet>
+        <template>
+          <h3>Basic scatter-plot Demo with chart-env with static input</h3>
+          <chart-env measurement='{"firstDim":{"data": [{"x":5,"y":13},{"x":7,"y":67},{"x":15,"y":90},{"x":14,"y":13},{"x":9,"y":67},{"x":4,"y":90}], "ds": "ds1", "measurement": "x"},"secondDim":{"data": [{"x":50,"y":120},{"x":100,"y":160},{"x":150,"y":200},{"x":50,"y":240},{"x":100,"y":260},{"x":150,"y":300}], "ds": "ds2" , "measurement": "y"}}'>
+          <my-chart id="chart1" dim-x="firstDim" dim-y="secondDim"></my-chart>
+        </template>
+      </demo-snippet>
+    </chart-env>
+  </div>
+
+  <div class="vertical-section-container centered">
+    <demo-snippet>
+      <template>
+        <h3>Basic scatter-plot Demo without chart-env and static input</h3>
+        <my-chart id="chart1" data-x="[1,2,3,4,5]" data-y="[10,20,30,40,50]"></my-chart>
+      </template>
+    </demo-snippet>
+  </div>
+
+
+
+
+</body>
+</html>

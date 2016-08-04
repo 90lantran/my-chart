@@ -7,9 +7,9 @@
 
 <template>
 	<style>
-		:host{
-			display: inline-block;
-		}
+	:host{
+		display: inline-block;
+	}
 	</style>
 	<content id="chartEnv"></content>
 </template>
@@ -17,51 +17,29 @@
 <script>
 
 Polymer({
-is:'chart-env',
-properties:{
-	dataTemp:{
-		type: Object,
-		value: {},
-		notify: true
-	},
-	
-	measurement:{
-		type: Object,
-		notify: true
+	is:'chart-env',
+	properties:{
+		dataTemp:{
+			type: Object,
+			value: {},
+			notify: true
+		},
+
+		measurement:{
+			type: Object,
+			notify: true
+		}
+
 	},
 
-	// dataLoaded:{
-	// 	type: Boolean,
-	// 	notify: true,
-	// 	reflectToAttribute: true,
-	// 	value : false
-	// }
+// Listeners for interaction between 2 graphs
+listeners:{
+	'hover': 'onHover',
+	'unHover': 'onUnhover'
 },
 
-	listeners:{
-		'hover': 'onHover',
-		'unHover': 'onUnhover'
-	},
-
-// _dataTemp: function(){
-// 	console.log(this.dataTemp);
-// 	this.dataLoaded = true;
-// },
-
-// attributeChanged: function() {
-//  	console.log("In attributeChanged");
-//  	if (this.dataLoaded == true){
-//  		this._dataCreated();
-//  	}
-//  // 	if(this.dataXLoaded == true && this.dataYLoaded == true) {
-// 	// 		this._dataCreated();
-// 	// }
-//  },
-
 onHover: function(e){
-	var self = this;
-
-	console.log("in onHover of chart-env");
+	// console.log("in onHover of chart-env");
 	this.fire('hoverAllCharts',
 		{data: e.detail} 
 		);
@@ -72,39 +50,51 @@ onUnhover: function(e) {
 },
 
 ready: function(){
-		console.log("in ready of chart-env");
-
-		this.asyncHandler = this.async(this.lookforDom, 1000);
+		// console.log("in ready of chart-env");
 
 		this.scopeSubtree(this, true);
-
-		// var ds1 = this.measurement.firstDim.ds;
-		// var ds2 = this.measurement.secondDim.ds;
 
 		var self = this;
 
 		var measKeys = Object.keys(this.measurement);
 
 		var validDs = true;
+		var staticData = false;
 
 		measKeys.forEach(function(mk){
 			var currMea = self.measurement[mk]; // {ds : measurement}
-			if (currMea.ds == null){
+
+			// console.log(currMea);
+
+			if(currMea.data != undefined && currMea.data != null) {
+				console.log("inside currmeas.data");
+				staticData = true;
+				validDs = false;
+				self.dataTemp[currMea.ds] = currMea.data;
+			}
+			else if (currMea.ds == null){
 				validDs = validDs && false;
 				console.log("You did not specify the data-source.");
 			} 
-		
+
 		});
 
 		if (validDs){
-			this.lookforDom();
-		} 
-},
+			this.asyncHandler = this.async(this.lookforDom, 1000);
+			// this.lookforDom();
+		}
+		else if(staticData) {
+			this._dataCreated();
+		}
+	},
 
 // Use Async method to check if data were fetched into the dom or not
 // if data were in the dom, bind them to chart-env, and cancel the listener
 // if data were not there, keep looking. 
 lookforDom : function() {
+
+
+	//self.measurements["firstDim"].loaded = true;
 
 	var self = this;
 
@@ -112,7 +102,7 @@ lookforDom : function() {
 
 	var measKeys = Object.keys(this.measurement); // firstDim, secondDim, thirdDim, ...
 
-	console.log(measKeys);
+	// console.log(measKeys);
 
 	measKeys.forEach(function(mk) {
 		m = self.measurement[mk]; // m = {ds: measurement}
@@ -122,8 +112,8 @@ lookforDom : function() {
 		}
 	});
 
-	console.log(allAvailable);
-	console.log(self.dataTemp);
+	// console.log(allAvailable);
+	// console.log(self.dataTemp);
 	// When all dataResponse are available, push them to dataTemp
 	if(allAvailable == true) {
 		this.cancelAsync(this.asyncHandler);
@@ -132,16 +122,10 @@ lookforDom : function() {
 			m = self.measurement[mk];
 			self.dataTemp[m.ds] = null;
 			var elem = Polymer.dom(self).parentNode.querySelector('data-source[datasource-id$="' + m.ds + '"]');
-			self.dataTemp[m.ds] = elem.dataResponse; // should it be self.dataTemp[mk] ??
+			self.dataTemp[m.ds] = elem.dataResponse; 
 		});
-
-		
-		// var ds1 = document.querySelector('data-source[datasource-id$="ds1"]');
-  //   	var ds2 = document.querySelector('data-source[datasource-id$="ds2"]');
-		// this.dataTempx = ds1.dataResponse;
-  //     	this.dataTempy = ds2.dataResponse;
 	}
-	console.log(self.dataTemp);
+	// console.log(self.dataTemp);
 	this._dataCreated();
 
 },
@@ -150,10 +134,7 @@ lookforDom : function() {
 // dataRepsonse from  <data-source> will be processed , 
 // and bind them to dataX and dataY of chart  
 _dataCreated: function() {
-	// var dataXX = this.dataTempx;
-	// var dataYY = this.dataTempy;
-	console.log("In dataCreated");
-	
+	// console.log("In dataCreated");
 	var self = this;
 
 	var measKeys = Object.keys(this.measurement);
@@ -161,21 +142,25 @@ _dataCreated: function() {
 	measKeys.forEach(function(mk){
 		var currMea = self.measurement[mk]; // {ds : measurement}]
 
+		// console.log(currMea);
+
 		data = self.dataTemp[currMea.ds];
 
 		self[mk] = [];
 		for(var i = 0; i < data.length; i++){
-			console.log(data[i]);
-	          self[mk].push(data[i][currMea.measurement]);
-	     }
-	     console.log(self[mk]);
+			self[mk].push(data[i][currMea.measurement]);
+		}
 	});
 
 	var numChildren = self.getEffectiveChildren().length;
 	for(var index = 0; index < numChildren; index++){
 		var currentChild = self.getContentChildren('#chartEnv')[index];
-		currentChild.dataX = self[currentChild.dimX];
-		currentChild.dataY = self[currentChild.dimY];
+
+		var tdx = currentChild.dimX || currentChild.getAttribute("dim-x");
+		var tdy = currentChild.dimY || currentChild.getAttribute("dim-y");
+
+		currentChild.dataX = self[tdx];
+		currentChild.dataY = self[tdy];
 	}												 
 }
 

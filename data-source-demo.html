@@ -1,0 +1,57 @@
+  <link rel="import" href="../polymer/polymer.html">
+  <script src="../jquery/dist/jquery.js"></script>
+
+  <dom-module id="data-source-demo">
+  <template>
+    <style>
+      :host{
+        display: inline-block;
+      }
+    </style>
+
+    <span> data is fetched from {{dataUrl}} </span></br>
+    <span> data length is {{dataResponse.length}}</span></br>
+
+    <template is="dom-repeat" items="{{dataResponse}}" as="ds">
+      <span>x = {{ds.x}} , y = {{ds.y}}</span> <br/>
+    </template>
+
+  </template>
+
+  <script>
+
+  Polymer({
+    is:'data-source-demo',
+    properties:{
+      dataResponse:{
+        type: Object,
+        notify: true,
+        readOnly: true,
+        reflectToAttribute: true
+      },
+
+      dataUrl:{
+        type: String,
+        notify: true
+      },
+
+      datasourceId: {
+        type: String,
+        notify: true
+      }
+    },
+
+    ready: function(){
+      console.log("in ready of data-source");
+      var self = this;
+      $.get(this.dataUrl, function(json) {
+        console.log(json);
+        self._setDataResponse(json);
+       });  
+    }
+    
+  });
+
+  </script>
+
+  </dom-module>
